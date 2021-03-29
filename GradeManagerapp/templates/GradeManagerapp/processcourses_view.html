@@ -1,0 +1,138 @@
+
+{%extends 'base.html'%}
+{% load static%}
+{%block content%}
+        <div class="container">
+            <form   class="form" method="POST" action="{% url 'displayCourse_view' %}">  
+                    {%csrf_token%} 
+                  <!--                nav tabs	             -->
+                  <div id="nav-tabs">
+                                <div>
+                                    {%if messages%}
+                                    {%for message in messages%}
+                                                      
+
+                                          <div class="alert {{message.level_tag}} alert-dismissible fade show" role="alert">
+                                              <strong>{{request.user}} !</strong> {{message.message }} 
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                        </div>
+                                    {%endfor%}
+                                    {%endif%}
+                                </div>
+                        <div class="row">
+                            <div class="col-md-8">             
+                                <!-- Card -->
+                                <div class="card card-cascade wider ">
+
+                                    <!-- Card image -->
+
+                                      <div class="view view-cascade gradient-card-header aqua-gradient">
+                                          <!-- Title -->
+                                          <h4 class="card-header-title mb-3">SELECT COURSE AND CONSTRAINTS</h4>
+                                          <!-- Text -->
+                                      </div>
+
+                                      <!-- Card content -->
+                                      <div class="card-body card-body-cascade text-center">
+
+                                        <!-- Text START-->
+
+                                        <!-- Material checked -->
+                                            <select id="Selectedcourse" name='Selectedcourse'  class="mdb-select md-form" searchable="Search here..">
+                                                <option value="" disabled selected>Choose your Course</option>
+                                                {%for crs in courselist%}
+                                                <option value={{crs.MYCOURSEGUID}} data-secondary-text= {{crs.MYCOURSENAME}}>CODE :{{crs.MYCOURSEID}} , UNIT: {{crs.MYCOURSEUNIT}} SESSION : {{crs.MYASESSIONID}} , SEMESTER : : {{crs.MYSEMESTERID}}</option>
+
+                                              {%endfor%}
+                                            </select>
+                                            <div class ="text-info text-left">
+
+                                                    <!-- Default checked -->
+                                                    <div class="custom-control custom-checkbox">
+                                                      <input type="checkbox" class="custom-control-input" id="defaultChecked" checked  name='includescore'>
+                                                      <label class="custom-control-label" for="defaultChecked"> Include those with Scores</label>
+                                                    </div>
+
+                                                    <div class="custom-control custom-checkbox">
+                                                      <input type="checkbox" class="custom-control-input" id="defaultChecked2" checked  name='orderbymatricno'>
+                                                      <label class="custom-control-label" for="defaultChecked2"> Order with Matric. Number</label>
+                                                    </div>
+
+                                                    <div class="form-group ">
+                                                      <label for="exampleFormControlSelect1">Year</label>
+                                                      <select class="form-control" id="exampleFormControlSelect1" name='year' >
+                                                              <option>2020</option>
+                                                              <option>2019</option>
+                                                              <option>2018</option>
+                                                              <option>2017</option>
+                                                              <option>2016</option>
+                                                              <option>2021</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                              <label for="exampleFormControlSelect1">Month</label>
+                                                              <select class="form-control" id="exampleFormControlSelect1" name='month' >
+                                                                {% for i in months %}
+                                                                  <option>{{i}}</option>
+                                                                  {%endfor%}
+
+                                                                </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                                  <label for="exampleFormControlSelect1">Day</label>
+                                                                  <select class="form-control" id="exampleFormControlSelect1" name='day' > 
+                                                                    {% for i in days %}
+                                                                    <option>{{i}}</option>
+                                                                    {%endfor%}
+                                                                  </select>
+                                                    </div>
+                                            </div> <!--- <div class ="text-info text-left">-->
+                                            {% comment %} card body end {% endcomment %}
+
+                                      </div>  <!-- Card-body  by self--> 
+                                      
+                                       <button type="submit" class="btn btn-primary btn-round"> Load Course </button>
+
+                                </div>  <!-- end of card -->
+                                  
+                            </div> <!-- tend col-md-8-->
+                         <div class="col-md-4">    
+                         <!-- Card -->
+<div class="card card-cascade wider">
+
+  <!-- Card image -->
+  <div class="view view-cascade gradient-card-header peach-gradient">
+
+    <!-- Title -->
+    <h2 class="card-header-title mb-3">News Title</h2>
+    <!-- Text -->
+    <p class="mb-0"><i class="fas fa-calendar mr-2"></i>26.07.2017</p>
+
+  </div>
+
+  <!-- Card content -->
+  <div class="card-body card-body-cascade text-center">
+
+    <!-- Text -->
+    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus, ex minis
+      recusandae. Facere modi sunt, quod quibusdam dignissimos neque rem nihil ratione est placeat vel, natus
+      non quos laudantium veritatis sequi.Ut enim ad minima veniam, quis nostrum.</p>
+    <!-- Link -->
+    <a href="#!" class="orange-text d-flex flex-row-reverse p-2">
+      <h5 class="waves-effect waves-light">Read more<i class="fas fa-angle-double-right ml-2"></i></h5>
+    </a>
+
+  </div>
+  <!-- Card content -->
+
+</div>
+<!-- Card -->
+                         </div>
+                        </div>
+                  </div> 
+            </form>
+      </div>
+
+{% endblock%}
