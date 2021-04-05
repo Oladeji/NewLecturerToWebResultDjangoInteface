@@ -1,0 +1,194 @@
+{%extends 'base.html'%}
+{% load static%}
+{%block content%}
+<div class="container">
+    <form class="form" method="POST" action="{% url 'downloadPdfReports' %}">
+        {%csrf_token%}
+        <!--                nav tabs	             -->
+        <div id="nav-tabs">
+            <div>
+                {%if messages%}
+                {%for message in messages%}
+                <div class="alert  {{message.level_tag}}  alert-dismissible fade show" role="alert">
+                    <strong>{{message.message}} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {%endfor%}
+                {%endif%}
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <!-- Card -->
+                    <div class="card card-cascade">
+
+                        <!-- Card image -->
+                        <div class="view view-cascade gradient-card-header blue-gradient">
+
+                            <!-- Title -->
+                            <h6 class="card-header-title mb-3">Report Types</h6>
+                            <!-- Subtitle -->
+
+                        </div>
+
+                        <!-- Card content -->
+                        <div class="card-body card-body-cascade ">
+
+                            {%for crs,ss in Reports.items%}
+
+
+                            <div class="form-check">
+
+                                <input type="radio" class="form-check-input" name="reportname" id="{{crs}}" value="{{crs}}">
+                                <label class="form-check-label" for={{crs}}>{{ss}}</label>
+                            </div>
+                            {% endfor %}
+
+                            <hr>
+                            <button type="submit" class="btn btn-primary btn-round"> Load Report </button>
+                            
+                        </div>
+
+                    </div>
+                    <!-- Card -->
+
+                </div>
+                <div class="col-md-4">
+                    ----
+
+                    ----
+                </div>
+                <div class="col-md-4">
+
+                    <!-- Card -->
+                    <div class="card card-cascade">
+
+                        <!-- Card image -->
+                        <div class="view view-cascade gradient-card-header blue-gradient">
+
+                            <!-- Title -->
+                            <h6 class="card-header-title mb-3">Report Constraints</h6>
+
+                        </div>
+
+                        <!-- Card content -->
+                        <div class="card-body card-body-cascade ">
+
+                            <div class="form-check">
+
+                                <input type="checkbox" class="form-check-input" name='includescore' id='includescore'>
+                                <label class="form-check-label" for='includescore'>Include those with Scores</label>
+                            </div>
+                            
+                                        <!-- Newsletter -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="orderbymatricno">
+                                <label class="form-check-label" for="orderbymatricno">Order by Matric No</label>
+                            </div>
+                            <hr>
+            <div class="form-row">
+
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='3' name='deptcode' id="materialRegisterFormPassword" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="deptcode">Department Code</label>
+                        <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                            e.g ACC
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='4'  name='setcode' id="setcode" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="setcode">Set</label>
+                        <small id="materialRegisterFormPasswordHelpBlock1" class="form-text text-muted mb-4">
+                             e.g 2000
+                        </small>
+                    </div>
+                </div>
+            </div>
+                            <hr>
+               <div class="form-row">
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='9' name='sessioncode' id="sessioncode" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="sessioncode">Session</label>
+                        <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                            e.g 2018/2019
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='1'  name='semestercode' id="semestercode" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="semestercode">Semester</label>
+                        <small id="materialRegisterFormPasswordHelpBlock1" class="form-text text-muted mb-4">
+                             e.g 1
+                        </small>
+                    </div>
+                </div>
+            </div>
+                            <hr>
+                            <div class="form-row">
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='6' name='progcode' id="progcode" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="progcode">Program</label>
+                        <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                            e.g HND
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='4'  name='progtypecode' id="progtypecode" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="progtypecode">Program Type</label>
+                        <small id="materialRegisterFormPasswordHelpBlock1" class="form-text text-muted mb-4">
+                             e.g DPP
+                        </small>
+                    </div>
+                </div>
+            </div>
+                            <hr>
+<div class="form-row">
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='3' name='myLevelTodo' id="myLevelTodo" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="myLevelTodo">Current Level</label>
+                        <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                            e.g 200
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- Password -->
+                    <div class="md-form">
+                        <input type="text" maxlength='20'  name='myMatricNo' id="myMatricNo" class="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock">
+                        <label for="myMatricNo">Matric No </label>
+                        <small id="materialRegisterFormPasswordHelpBlock1" class="form-text text-muted mb-4">
+                             e.g 200123231234
+                        </small>
+                    </div>
+                </div>
+            </div>
+                            <hr>
+
+                        </div>
+
+                    </div>
+                    <!-- Card -->
+                </div>
+            </div>
+    </form>
+</div>
+
+{% endblock%}

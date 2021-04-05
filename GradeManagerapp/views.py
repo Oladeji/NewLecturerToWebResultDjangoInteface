@@ -14,7 +14,7 @@ import time
 import openpyxl
 import base64
 from Cryptodome.Cipher import AES
-
+from . AccessRoles import AccessRoles
 from openpyxl.styles import Protection ,Font, Color, Alignment, Border, Side, colors
 from django.core.files.storage import FileSystemStorage
 from . generatescorelist import generatescorelist ,validatelist 
@@ -411,12 +411,14 @@ def downloadPdfReports(request):
     setcode= request.POST['setcode']
     reportname= request.POST['reportname']
     myLevelTodo= request.POST['myLevelTodo']
+    myMatricNo= request.POST['myMatricNo']
     #progcode= request.POST['progcode']
     # params = {'includescore':includescore,'longerreporttype':crsid,'orderbymatricno':orderbymatricno,'reportname':reportname,'step':step,'year':year,'month':month,'day':day}
-    params = { 'myLevelTodo':myLevelTodo, 'reportname':reportname,'longerreporttype':'TRUE','mycampId':'IBA','myProgId':progcode,'myProgOptionId':deptcode,'myAsetId':setcode,'myAsessionId':sessioncode,'mySemesterId':semestercode,'progtypeId':progtypecode}
+    params = { 'myLevelTodo':myLevelTodo, 'reportname':reportname,'longerreporttype':'TRUE','mycampId':'IBA','myProgId':progcode,'myProgOptionId':deptcode,'myAsetId':setcode,'myAsessionId':sessioncode,'mySemesterId':semestercode,'progtypeId':progtypecode,'myMatricNo':myMatricNo}
   
     filename=(reportname+myLevelTodo+progcode+deptcode+setcode+sessioncode+semestercode+progtypecode).replace("/", "_")
     print(filename)
+    print(params)
     headers = {'content-type': 'application/json'}
     
     r = requests.post(api,json=params,headers=headers)
@@ -438,3 +440,103 @@ def downloadScoreSheetPdf(request):
     response = HttpResponse(r.content,content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename='+params['longerreporttype']+".pdf"
     return response
+
+
+
+def register_view(request):
+    print("Calling registerview")
+    next = request.GET.get('next')
+    print(next)
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST) 
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+            Role='USER'
+            CampId='NONE'
+            FacId='NONE'
+            DeptId='NONE'
+            ProgId='NONE'
+            ProgOptionId='NONE'
+            ProgType='NONE'
+            CourseId='NONE'
+            theRoles = AccessRoles(Role,FacId,DeptId,ProgId,ProgOptionId,ProgType,CourseId)
+            theRolesjson = json.dumps(theRoles.__dict__)
+            if len(theRolesjson)> 150 :
+                raise('Problem Setting Access lenght for Roles')
+            print(theRolesjson)
+            #user.first_name='Please get this'
+            user.last_name=theRolesjson
+            if len(user.first_name)> 150 :
+                  user.first_name=user.first_name[0:150]
+            print(user)
+            user.save()
+            print(user)
+            username = form.cleaned_data['email']
+            password=form.cleaned_data['password']
+            user.username = username
+            user.set_password(password)
+            print("userrr2")
+            user.save()
+            print(user)
+
+            new_user = authenticate(username=username,password=password)
+            #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            login(request,new_user)
+            if next :
+                return redirect(next)
+            return redirect('landing')
+        else:
+            print(form.errors)
+            print(form.errors.as_json() )
+            messages.error(request,form.errors.as_json() )
+    else:
+        form = UserRegisterForm()
+
+             
+    context ={'form' : form }
+    return render(request,'GradeManagerapp/register_view.html',context)
+
+@login_required
+def reports_view(request):
+
+    print("reports_view")
+    Reports = {'Class_Listing' :  'Class Listing',
+      'Score_Sheet_Printing' :  'Score Sheets',
+      'Running_List' :  'Semester Running List',
+      'Semester_Report' :  'Semester Result',
+      'Student_Semester_Result' :  'Student Result',
+      #'Standard_Report' :  'Standard Report',
+      #'Graduation_Report' :  'Graduation Report',
+      #'Graduation_Report_Running' :  'Graduation Report Running List',
+      #'Graduation_Report_Tag' :  'Graduation Report- Place a Tag',
+      #'Graduation_Data_Extract' :  'Graduation Report- Extract Data',
+      #'Graduation_Data_Restore_Extracted' :  'Graduation Data- Restore Extracted Data',
+      #'Transcript_Data_Extract' :  'Transcript_Data- Extract Data',
+      #'Course_Registration_Stat' :  'Course Registration Statistics'
+      }
+    courselist=""
+    if request.method == 'POST':
+
+            
+            api=settings.BASE_URL+'/api/Camp/PythonGetAvailableCoursesForEmail'
+            print(api)
+            try:
+                
+                params={'email':request.user.email}       
+                r = requests.get(api,params)
+                courselist = json.loads(r.text)
+                if len(courselist) == 0 :
+                    messages.error(request,"No Course(s) available")
+
+                if len(courselist) > 0 :          
+                    courselist = filterUnAvailableSemesters(courselist)   
+                messages.success(request, str (len(courselist))+ " Courses Successfully Loaded")
+        
+
+            except  Exception as inst:
+                print(inst)
+                messages.error(request,"Problem Loading Courses , Check Connection")
+                    
+    return render(request,'GradeManagerapp/reports_view.html',{'courselist':courselist,'Reports':Reports,})
+

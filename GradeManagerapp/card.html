@@ -1,0 +1,325 @@
+
+{%extends 'base.html'%}
+{% load static%}
+{%block content%}
+        <div class="container">
+               <form   class="form" method="POST" action="{% url 'downloadPdfReports' %}">  
+                {%csrf_token%} 
+        <!--                nav tabs	             -->
+        <div id="nav-tabs">
+          <div>
+          {%if messages%}
+              {%for message in messages%}
+                    <div class="alert {{message.level_tag}}">
+                      <div class="container">
+                        <div class="alert-icon">
+                          <i class="material-icons">check</i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                        </button>
+                     {{message.message }} for : {{request.user}}
+                      </div>
+                    </div>
+              {%endfor%}
+              {%endif%}
+          </div>
+          <div class="row">
+              
+            <div class="col-md-4">                  
+              
+              {% comment %} {%for crs in Reports%} {% endcomment %}
+              <!-- Tabs with icons on Card -->
+              <div class="card card-nav-tabs">
+                <div class="card-header card-header-primary"> 
+                
+                <span >Report Types </span>
+
+                </div>
+                <div class="card-body ">
+                  <div class="tab-content">
+                    <div class="tab-pane active">
+                     <div >
+             {%for crs,ss in Reports.items%} 
+                    <div class="form-check">
+                                <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="reportname" id="reportname" value={{crs}}>
+                                    {{crs}}  {{ss}}
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                    </div>
+           {% endfor %} 
+
+
+      {% comment %} <input type="hidden" name="MYCOURSEGUID" value={{crs.MYCOURSEGUID}} > {% endcomment %}
+                      <button type="submit" class="btn btn-primary btn-round"> Load  Report </button>
+            </div>
+                  
+                    </div>
+                </div>
+                </div>
+              </div>              <!-- End Tabs with icons on Card -->
+          <hr>
+        {% comment %} {% endfor %} {% endcomment %}
+              
+        </div>
+            <div class="col-md-4">
+</div>
+            <div class="col-md-4">
+             
+              <!-- Tabs on Plain Card -->
+              <div class="card card-nav-tabs">
+        
+                 
+                <div class="card-header card-header-danger">
+                  <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                     
+                    Report Constraints
+                  
+                </div>
+                <div class="card-body ">
+                  <div class="tab-content ">
+                    <div class="tab-pane active"> 
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" name='includescore' >
+                              Include those with Scores
+                          <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                        </label>
+                      </div>
+
+                    <div class="tab-pane active"> 
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" name='orderbymatricno' >
+                              Order with Matric. Number
+                          <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                        </label>
+                      </div>
+ 
+             <div>      
+              <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Department Code</label>
+                <input type="text" class="form-control" name="deptcode"   id="deptcode">
+                <span class="bmd-help">e.g department option Code EEE</span>
+              </div>
+               <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Set</label>
+                <input type="text" class="form-control" name="setcode" id="setcode">
+                <span class="bmd-help">e.g Year of entry 2000</span>
+              </div>
+              <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Session</label>
+                <input type="text" class="form-control" name="sessioncode" id="sessioncode">
+                <span class="bmd-help">e.g 2019/2020</span>
+              </div>
+                     <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Semester</label>
+                <input type="text" class="form-control" name="semestercode" id="semestercode">
+                <span class="bmd-help">e.g 1</span>
+              </div>   
+                 <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Programme</label>
+                <input type="text" class="form-control" name="progcode" id="progcode">
+                <span class="bmd-help">e.g HND </span>
+              </div>   
+
+                 <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Programme Type</label>
+                <input type="text" class="form-control" name="progtypecode" id="progtypecode">
+                <span class="bmd-help">either FULL or DPP or PART </span>
+              </div>
+                 <div class="form-group">
+                <label for="exampleInput1" class="bmd-label-floating">Current Level</label>
+                <input type="text" class="form-control" name="myLevelTodo" id="myLevelTodo">
+                <span class="bmd-help">100 /200 /300/400 (Optional) </span>
+              </div>
+
+                
+  </div>
+
+
+{%extends 'base.html'%}
+{% load static%}
+{%block content%}
+<div class="container">
+    <form class="form" method="POST" action="{% url 'downloadPdfReports' %}">
+        {%csrf_token%}
+        <!--                nav tabs	             -->
+        <div id="nav-tabs">
+            <div>
+                {%if messages%}
+                {%for message in messages%}
+                <div class="alert  {{message.level_tag}}  alert-dismissible fade show" role="alert">
+                    <strong>{{message.message}} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {%endfor%}
+                {%endif%}
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    {% comment %} {%for crs in Reports%} {% endcomment %}
+                    <!-- Tabs with icons on Card -->
+                    <div class="card card-nav-tabs">
+                        <div class="card-header card-header-primary">
+                            <span>Report Types </span>
+
+                        </div>
+                        <div class="card-body ">
+                            <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <div>
+                                        {%for crs,ss in Reports.items%}
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="reportname"
+                                                    id="reportname" value={{crs}}>
+                                                {{crs}} {{ss}}
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+
+
+                                        {% comment %} <input type="hidden" name="MYCOURSEGUID"
+                                            value={{crs.MYCOURSEGUID}}> {% endcomment %}
+                                        <button type="submit" class="btn btn-primary btn-round"> Load Report </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- End Tabs with icons on Card -->
+                    <hr>
+                    {% comment %} {% endfor %} {% endcomment %}
+
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+
+                    <!-- Tabs on Plain Card -->
+                    <div class="card card-nav-tabs">
+
+
+                        <div class="card-header card-header-danger">
+                            <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+
+                            Report Constraints
+
+                        </div>
+                        <div class="card-body ">
+                            <div class="tab-content ">
+                                <div class="tab-pane active">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name='includescore'>
+                                            Include those with Scores
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="tab-pane active">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" name='orderbymatricno'>
+                                                Order with Matric. Number
+                                                <span class="form-check-sign">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Department
+                                                    Code</label>
+                                                <input type="text" class="form-control" name="deptcode" id="deptcode">
+                                                <span class="bmd-help">e.g department option Code EEE</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Set</label>
+                                                <input type="text" class="form-control" name="setcode" id="setcode">
+                                                <span class="bmd-help">e.g Year of entry 2000</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Session</label>
+                                                <input type="text" class="form-control" name="sessioncode"
+                                                    id="sessioncode">
+                                                <span class="bmd-help">e.g 2019/2020</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Semester</label>
+                                                <input type="text" class="form-control" name="semestercode"
+                                                    id="semestercode">
+                                                <span class="bmd-help">e.g 1</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Programme</label>
+                                                <input type="text" class="form-control" name="progcode" id="progcode">
+                                                <span class="bmd-help">e.g HND </span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Programme
+                                                    Type</label>
+                                                <input type="text" class="form-control" name="progtypecode"
+                                                    id="progtypecode">
+                                                <span class="bmd-help">either FULL or DPP or PART </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInput1" class="bmd-label-floating">Current
+                                                    Level</label>
+                                                <input type="text" class="form-control" name="myLevelTodo"
+                                                    id="myLevelTodo">
+                                                <span class="bmd-help">100 /200 /300/400 (Optional) </span>
+                                            </div>
+
+
+                                        </div>
+
+
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Tabs on plain Card -->
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+{% endblock%}
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- End Tabs on plain Card -->
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+{% endblock%}
